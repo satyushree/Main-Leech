@@ -7,28 +7,22 @@ import logging
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-
 import math
 import os
 import time
-
-# the secret configuration specific things
-if bool(os.environ.get("WEBHOOK", False)):
-    from sample_config import Config
-else:
-    from config import Config
-
-# the Strings used for this "thing"
-from translation import Translation
-
-
-async def progress_for_pyrogram(
+from tobrot import (
+    FINISHED_PROGRESS_STR,
+    UN_FINISHED_PROGRESS_STR,
+    EDIT_SLEEP_TIME_OUT
+)
+async def progress_for_pyrogram_g(
     current,
     total,
     ud_type,
     message,
     start
 ):
+    """ generic progress display for Telegram Upload / Download status """
     now = time.time()
     diff = now - start
     if round(diff % 10.00) == 0 or current == total:
@@ -38,13 +32,12 @@ async def progress_for_pyrogram(
         elapsed_time = round(diff) * 1000
         time_to_completion = round((total - current) / speed) * 1000
         estimated_total_time = elapsed_time + time_to_completion
-
-        elapsed_time = TimeFormatter(milliseconds=elapsed_time)
-        estimated_total_time = TimeFormatter(milliseconds=estimated_total_time)
+        elapsed_time = time_formatter(milliseconds=elapsed_time)
+        estimated_total_time = time_formatter(milliseconds=estimated_total_time)
 
         progress = "[{0}{1}] \nP: {2}%\n".format(
-            ''.join(["🍏" for i in range(math.floor(percentage / 5))]),
-            ''.join(["🍎" for i in range(20 - math.floor(percentage / 5))]),
+            ''.join(["█" for i in range(math.floor(percentage / 5))]),
+            ''.join(["░" for i in range(20 - math.floor(percentage / 5))]),
             round(percentage, 2))
 
         tmp = progress + "{0} of {1}\nSpeed: {2}/s\nETA: {3}\n".format(
@@ -56,30 +49,34 @@ async def progress_for_pyrogram(
         )
         try:
             await message.edit(
-                text="{}\n {}".format(
+                "{}\n {}".format(
                     ud_type,
                     tmp
                 )
             )
         except:
             pass
-
-
-def humanbytes(size):
+def humanbytes(size: int) -> str:
+    """ converts bytes into human readable format """
     # https://stackoverflow.com/a/49361727/4723940
     # 2**10 = 1024
     if not size:
         return ""
-    power = 2**10
-    n = 0
-    Dic_powerN = {0: ' ', 1: 'Ki', 2: 'Mi', 3: 'Gi', 4: 'Ti'}
+    power = 2 ** 10
+    number = 0
+    dict_power_n = {
+        0: " ",
+        1: "Ki",
+        2: "Mi",
+        3: "Gi",
+        4: "Ti"
+    }
     while size > power:
         size /= power
-        n += 1
-    return str(round(size, 2)) + " " + Dic_powerN[n] + 'B'
-
-
-def TimeFormatter(milliseconds: int) -> str:
+        number += 1
+    return str(round(size, 2)) + " " + dict_power_n[number] + 'B'
+def time_formatter(milliseconds: int) -> str:
+    """ converts seconds into human readable format """
     seconds, milliseconds = divmod(int(milliseconds), 1000)
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)
