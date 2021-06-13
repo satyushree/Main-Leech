@@ -125,7 +125,7 @@ async def extract_youtube_dl_formats(
                             # special weird case :\
                             ikeyboard = [
                                 pyrogram.InlineKeyboardButton(
-                                    "SVideo [" + "] ( " + approx_file_size + " )",
+                                    "🎞 SVideo [" + "] ( " + approx_file_size + " )",
                                     callback_data=(cb_string_video).encode("UTF-8"),
                                 )
                             ]
@@ -157,7 +157,7 @@ async def extract_youtube_dl_formats(
             else:
                 format_id = current_r_json["format_id"]
                 format_ext = current_r_json["ext"]
-                cb_string_video = "{}|{}|{}".format("🎞 video", format_id, format_ext)
+                cb_string_video = "{}|{}|{}".format("video", format_id, format_ext)
                 inline_keyboard.append(
                     [
                         pyrogram.InlineKeyboardButton(
