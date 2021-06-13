@@ -1,17 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # (c) Shrimadhav U K | gautamajay52
-
-# the logging things
-import logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
-logging.getLogger("pyrogram").setLevel(logging.WARNING)
-LOGGER = logging.getLogger(__name__)
-
+ 
 import asyncio
+import logging
 import os
 import re
 import shutil
@@ -337,8 +329,7 @@ async def upload_single_file(
             disable_notification=True,
             progress=prog.progress_for_pyrogram,
             progress_args=(
-                "trying to upload",
-                message_for_progress_display,
+                "",
                 start_time,
             ),
         )
@@ -357,7 +348,7 @@ async def upload_single_file(
             message_for_progress_display = message
             if not edit_media:
                 message_for_progress_display = await message.reply_text(
-                    "<b>Starting to upload</b>\n\n<b> File Name</b>: <code>{}</code>".format(os.path.basename(local_file_name))
+                    "<b>Trying to upload</b>\n\n<b> File Name</b>: <code>{}</code>".format(os.path.basename(local_file_name))
                 )
                 prog = Progress(from_user, client, message_for_progress_display)
             if local_file_name.upper().endswith(("MKV", "MP4", "WEBM")):
@@ -393,7 +384,7 @@ async def upload_single_file(
                             thum.write(req.content)
                         img = Image.open(thumb_image_path).convert("RGB")
                         img.save(thumb_image_path, format="jpeg")
-                     get the correct width, height, and duration for videos greater than 10MB
+                    # get the correct width, height, and duration for videos greater than 10MB
                     if os.path.exists(thumb_image_path):
                         metadata = extractMetadata(createParser(thumb_image_path))
                         if metadata.has("width"):
