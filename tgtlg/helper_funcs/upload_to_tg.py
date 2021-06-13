@@ -383,17 +383,17 @@ async def upload_single_file(
                             os.path.dirname(os.path.abspath(local_file_name)),
                             (duration / 2),
                         )
-                   # else:
-                    #    req = requests.get(yt_thumb)
-                     #   thumb_image_path = os.path.join(
-                      #      os.path.dirname(os.path.abspath(local_file_name)),
-                       #     str(time.time()) + ".jpg",
-                        #)
-                        #with open(thumb_image_path, "wb") as thum:
-                         #   thum.write(req.content)
-                        #img = Image.open(thumb_image_path).convert("RGB")
-                        #img.save(thumb_image_path, format="jpeg")
-                    # get the correct width, height, and duration for videos greater than 10MB
+                    else:
+                        req = requests.get(yt_thumb)
+                        thumb_image_path = os.path.join(
+                            os.path.dirname(os.path.abspath(local_file_name)),
+                            str(time.time()) + ".jpg",
+                        )
+                        with open(thumb_image_path, "wb") as thum:
+                            thum.write(req.content)
+                        img = Image.open(thumb_image_path).convert("RGB")
+                        img.save(thumb_image_path, format="jpeg")
+                     get the correct width, height, and duration for videos greater than 10MB
                     if os.path.exists(thumb_image_path):
                         metadata = extractMetadata(createParser(thumb_image_path))
                         if metadata.has("width"):
