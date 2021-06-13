@@ -4,7 +4,7 @@ hachoir
 Pillow
 pyrogram
 tgcrypto
-youtube_dl
+youtube_dl==2020.11.12
 hurry.filesize
 python-dotenv
 beautifulsoup4>=4.8.2,<4.8.10
