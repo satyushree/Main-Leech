@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # (c) Shrimadhav U K | gautamajay52
- 
-import asyncio
+
+# the logging things
 import logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logging.getLogger("pyrogram").setLevel(logging.WARNING)
+LOGGER = logging.getLogger(__name__)
+
+import asyncio
 import os
 import re
 import shutil
@@ -329,7 +337,8 @@ async def upload_single_file(
             disable_notification=True,
             progress=prog.progress_for_pyrogram,
             progress_args=(
-                "",
+                "trying to upload",
+                message_for_progress_display,
                 start_time,
             ),
         )
@@ -348,7 +357,7 @@ async def upload_single_file(
             message_for_progress_display = message
             if not edit_media:
                 message_for_progress_display = await message.reply_text(
-                    "<b>Trying to upload</b>\n\n<b> File Name</b>: <code>{}</code>".format(os.path.basename(local_file_name))
+                    "<b>Starting to upload</b>\n\n<b> File Name</b>: <code>{}</code>".format(os.path.basename(local_file_name))
                 )
                 prog = Progress(from_user, client, message_for_progress_display)
             if local_file_name.upper().endswith(("MKV", "MP4", "WEBM")):
@@ -374,16 +383,16 @@ async def upload_single_file(
                             os.path.dirname(os.path.abspath(local_file_name)),
                             (duration / 2),
                         )
-                    else:
-                        req = requests.get(yt_thumb)
-                        thumb_image_path = os.path.join(
-                            os.path.dirname(os.path.abspath(local_file_name)),
-                            str(time.time()) + ".jpg",
-                        )
-                        with open(thumb_image_path, "wb") as thum:
-                            thum.write(req.content)
-                        img = Image.open(thumb_image_path).convert("RGB")
-                        img.save(thumb_image_path, format="jpeg")
+                   # else:
+                    #    req = requests.get(yt_thumb)
+                     #   thumb_image_path = os.path.join(
+                      #      os.path.dirname(os.path.abspath(local_file_name)),
+                       #     str(time.time()) + ".jpg",
+                        #)
+                        #with open(thumb_image_path, "wb") as thum:
+                         #   thum.write(req.content)
+                        #img = Image.open(thumb_image_path).convert("RGB")
+                        #img.save(thumb_image_path, format="jpeg")
                     # get the correct width, height, and duration for videos greater than 10MB
                     if os.path.exists(thumb_image_path):
                         metadata = extractMetadata(createParser(thumb_image_path))
