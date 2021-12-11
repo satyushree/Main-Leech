@@ -88,7 +88,7 @@ async def download_tg(client, message):
                 message=message.reply_to_message,
                 file_name=download_location,
                 progress=prog.progress_for_pyrogram,
-                progress_args=("trying to download", c_time),
+                progress_args=(f"**• Downloading : •**", c_time),
             )
         except Exception as g_e:
             await mess_age.edit(str(g_e))
